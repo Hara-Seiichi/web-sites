@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %} User update {% endblock title%}
+
+{% block header %} User update {% endblock header %}
+
+{% block contents %}
+<form method="POST">
+    {% csrf_token %}
+    <div class="uk-align-center">
+        <div class="uk-card uk-card-default">
+            <div class="uk-card-header">
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                    <div class="uk-width-1-4 uk-text-right">User id</div>
+                    <div class="uk-width-3-4 uk-text-left"><input type="text" name="userid" value="{{object.userid}}"></div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">
+                    <div class="uk-grid-divider uk-grid-small" uk-grid>
+                        <div class="uk-width-1-4 uk-text-right">Name</div>
+                        <div class="uk-width-3-4 uk-text-left"><input type="text" name="name" value="{{object.name}}"></div>
+                    </div>
+                </h3>
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                <div class="uk-width-1-4 uk-text-right">Sex</div>
+                    <div class="uk-width-3-4 uk-text-left">
+                        <select class="uk-select" name="sex">
+                            <option value="">choose...</option>
+                            <option value="1" {% if sex == '-' %}selected{% endif %}>-</option>
+                            <option value="2" {% if sex == 'M' %}selected{% endif %}>M</option>
+                            <option value="3" {% if sex == 'F' %}selected{% endif %}>F</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                    <div class="uk-width-1-4 uk-text-right">Age</div>
+                    <div class="uk-width-3-4 uk-text-left"><input type="text" name="age" value="{{object.age}}"></div>
+                </div>
+            </div>
+            <div class="uk-card-footer">
+                <a href="{% url 'search' %}" class="uk-button">Back</a>
+                <input type="submit" value="update" class="uk-button" />
+            </div>
+        </div>
+        {% if messages %}
+            <script>
+                window.onload = function() {
+                    document.getElementById("errorDisp").click();
+                    };
+            </script>
+            <button id="errorDisp" class="uk-hidden" type="button" uk-toggle="target: #ERROR" onclick="console.log('Clicked')"></button>
+            <div id="ERROR" uk-modal>
+                <div class="uk-modal-dialog">
+                    <button class="uk-modal-close-default" uk-close>
+                    </button>
+                    <div class="uk-modal-body">
+                    <h2 class="uk-modal-title">
+                        Input error.
+                    </h2>
+                    {% for message in messages %}
+                        <div class="uk-text-danger">{{ message }}</div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</form>
+{% endblock contents %}

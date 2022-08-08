@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja" class="uk-height-1-1">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %} {% endblock title %}</title>
+        <link rel="stylesheet" href="{% static 'css/uikit.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/common.css' %}" />
+        <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/uikit.js' %}"></script>
+        <script
+            type="text/javascript"
+            src="{% static 'js/uikit-icons.js' %}"
+        ></script>
+    </head>
+    <body class="uk-height-1-1 uk-background-secondary uk-text-muted">
+        <div uk-sticky="start: 200; animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent uk-light">
+            <nav class="uk-navbar-container uk-container uk-container-expand" uk-navbar>
+                <div class="uk-navbar-left">
+                    <a class="uk-navbar-item uk-logo" href="{% url 'list' %}">{% block header %} {% endblock header %}</a>
+                </div>
+                <div class="uk-navbar-right">
+                    <!-- ログイン情報を取得する方法 -->
+                    {% if user.is_authenticated %}
+                        <a class="uk-active uk-link-reset">Hello! {{ user.username }}.</a>
+                        <a class="uk-navbar-toggle uk-navbar-toggle-animate" uk-navbar-toggle-icon href="#"></a>
+                        <div class="uk-navbar-dropdown">
+                            <ul class="uk-nav uk-navbar-dropdown-nav uk-link-reset">
+                                <li class="uk-active"><a href="{% url 'signout' %}">Sign out</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <ul class="uk-navbar-nav uk-link-reset">
+                            <li class="uk-active"><a>Not signed in.</a></li>
+                            <li class="uk-active"><a href="{% url 'signup' %}" class="uk-button">Exit.</a></li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+        <div class="uk-background-secondary uk-text-muted">
+            <div class="uk-background-secondary uk-text-muted" >
+                {% block contents %} {% endblock contents %}
+            </div>
+            <hr class="uk-margin-remove-vertical uk-divider-icon uk-background-secondary">
+            <div class="uk-margin-top uk-child-width-expand uk-grid-small uk-text-center uk-height-1-1 uk-background-secondary uk-text-muted" uk-grid>
+                <div class="uk-width-1-1">
+                    <a class="uk-icon-button uk-margin-right" uk-icon="twitter" href="https://twitter.com/OrdinarySumo"></a>
+                    <a class="uk-icon-button uk-margin-left" uk-icon="github" href="https://github.com/Hara-Seiichi"></a>
+                </div>
+                <div class="uk-width-1-1">
+                    <p class="uk-text-muted">Created by Sumo.</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

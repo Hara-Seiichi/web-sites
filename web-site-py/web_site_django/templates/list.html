@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %} List of users {% endblock title %}
+
+{% block header %} List of users {% endblock header %}
+
+{% block contents %}
+<form class="uk-margin uk-height-1-1" method="GET" action="{% url 'search' %}">
+    <div class="uk-height-1-1 uk-grid-match uk-grid-small uk-text-center" uk-grid>
+        <!--検索条件-->
+        <div class="uk-width-1-2@m">
+            <input class="uk-input" type="text" name="userid" value="{{userid}}" placeholder="Id">
+        </div>
+        <div class="uk-width-1-2@m">
+            <input class="uk-input" type="text" name="name" value="{{name}}" placeholder="Name">
+        </div>
+        <div class="uk-width-1-2@m">
+            <input class="uk-input" type="text" name="age" value="{{age}}" placeholder="Age">
+        </div>
+        <div class="uk-width-1-2@m">
+            <select class="uk-select" name="sex">
+                <option value="">choose...</option>
+                <option value="-" {% if sex == '-' %}selected{% endif %}>-</option>
+                <option value="M" {% if sex == 'M' %}selected{% endif %}>M</option>
+                <option value="F" {% if sex == 'F' %}selected{% endif %}>F</option>
+            </select>
+        </div>
+        <div class="uk-width-1-2@m">
+            <a href="{% url 'create' %}" class="uk-button uk-button-default uk-button-large uk-background-default ">Create</a>
+        </div>
+        <div class="uk-width-1-2@m">
+            <input type="submit" value="Search" class="uk-button uk-margin"/>
+        </div>
+        <div class="uk-width-2-2@m">
+            <hr class="uk-divider-icon">
+        </div>
+    </div>
+</form>
+<div class="uk-margin uk-container uk-container-expand uk-height-1-1">
+    <div class="uk-grid-divider uk-grid-small uk-child-width-expand uk-text-center uk-height-1-1" uk-grid>
+        <div>User id</div>
+        <div>Name</div>
+        <div>Age</div>
+        <div>Sex</div>
+        <div>Working</div>
+    </div>
+    {% for item in object_list %}
+        <div class="uk-grid-divider uk-grid-small uk-child-width-expand uk-height-1-1" uk-grid>
+            <div>{{item.userid}}</div>
+            <div>{{item.name}}</div>
+            <div>{{item.age}}</div>
+            <div>{{item.sex}}</div>
+            <div>
+                <a href="{% url 'detali' item.pk %}" class="uk-button">Detail</a>
+                <a href="{% url 'update' item.pk %}" class="uk-button">Update</a>
+                <a href="{% url 'delete' item.pk %}" class="uk-button">Delete</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock contents %}

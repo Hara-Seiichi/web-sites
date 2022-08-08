@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %} User detail {% endblock title %}
+
+{% block header %} User Detail {% endblock header %}
+
+{% block contents %}
+<!-- カードコンポーネントの例。-->
+<div class="uk-align-center">
+    <div class="uk-card uk-card-default">
+        <div class="uk-card-header">
+            <div class="uk-grid-divider uk-grid-small" uk-grid>
+                <div class="uk-width-1-4 uk-text-right">User id</div>
+                <div class="uk-width-3-4 uk-text-left">{{object.userid}}</div>
+            </div>
+        </div>
+        <div class="uk-card-body">
+            <h3 class="uk-card-title">
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                    <div class="uk-width-1-4 uk-text-right">Name</div>
+                    <div class="uk-width-3-4 uk-text-left">{{object.name}}</div>
+                </div>
+            </h3>
+            <div class="uk-grid-divider uk-grid-small" uk-grid>
+                <div class="uk-width-1-4 uk-text-right">Sex</div>
+                <div class="uk-width-3-4 uk-text-left">{{object.sex}}</div>
+            </div>
+            <div class="uk-grid-divider uk-grid-small" uk-grid>
+                <div class="uk-width-1-4 uk-text-right">Age</div>
+                <div class="uk-width-3-4 uk-text-left">{{object.age}}</div>
+            </div>
+        </div>
+        <div class="uk-card-footer">
+            <a href="{% url 'search' %}" class="uk-button">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock contents %}

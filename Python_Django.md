@@ -79,8 +79,8 @@ sequenceDiagram
     Singin->>List: Signin success
     List->>List: Search
     List->>Create: Forward
-    List-->>Create: Create success
-    List-->>Create: Back
+    Create-->>List: Create success
+    Create-->>List: Back
     List->>Update: Forward query string pk
     Update-->>List: Update success
     Update-->>List: Back
@@ -89,11 +89,11 @@ sequenceDiagram
     Delete-->>List: Back
     List->>Detail: Forward query string pk
     Detail-->>List: Back
-    List->>Singin: Singout
-    Create->>Singin: Singout
-    Update->>Singin: Singout
-    Delete->>Singin: Singout
-    Detail->>Singin: Singout
+    List-->>Singin: Singout
+    Create-->>Singin: Singout
+    Update-->>Singin: Singout
+    Delete-->>Singin: Singout
+    Detail-->>Singin: Singout
 ```
 
 ## メモ

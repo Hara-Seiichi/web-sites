@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "romanpeshkov.vscode-text-tables",
+        "mhutchie.git-graph",
+        "esbenp.prettier-vscode",
+        "bierner.markdown-preview-github-styles",
+        "yzhang.markdown-all-in-one"
+    ]
+}

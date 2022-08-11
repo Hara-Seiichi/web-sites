@@ -1,3 +1,4 @@
+from webbrowser import get
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -97,7 +98,7 @@ class UserListView(ListView):
         return queryset
 
 class UserDetailView(DetailView):
-    # ２行でquerystringに渡したPKで検索出来る。凄い。
+    # ２行でパスに渡したPKで検索出来る。凄い。
     model = UsersModel 
     template_name = 'detail.html'
 
@@ -114,14 +115,22 @@ class UserCreateView(CreateView):
     # 画面に戻った時のレイアウト調整が大変だったのでモーダル表示で逃げ。。
     def form_invalid(self, form):
         messages.add_message(self.request, messages.ERROR, form.errors)
-        return redirect('create')
+        return redirect(self.request.path)
 
 class UserUpdateView(UpdateView):
     # 継承元を変えるだけで登録の処理と変わらない。凄い。
-    # querystringにPKを渡すのを忘れずに。
+    # パスにPKを渡すのを忘れずに。
     model = UsersModel 
     template_name = 'update.html'
     form_class = UserForm
+
+    def get_context_data(self):
+        ctx = super().get_context_data()
+        # 外部キーにしている項目は出力内容は同じでも
+        # HTMLの条件で比較すると文字として認識されずにマッチしない。
+        # とりあえず、型を明示的に変換して回避
+        ctx['sex'] = str(self.object.sex)
+        return ctx
 
     # 成功した時のURL(定義しないと落ちる)
     success_url = reverse_lazy('search')
@@ -129,10 +138,10 @@ class UserUpdateView(UpdateView):
     # バリデーションでエラーになったとき
     def form_invalid(self, form):
         messages.add_message(self.request, messages.ERROR, form.errors)
-        return redirect('update')
+        return redirect(self.request.path)
 
 class UserDeleteView(DeleteView):
-    # querystringにPKを渡すのを忘れずに。これだけ凄いｗ
+    # パスにPKを渡すのを忘れずに。これだけ凄いｗ
     model = UsersModel 
     template_name = 'delete.html'
 

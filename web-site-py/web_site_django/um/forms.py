@@ -3,10 +3,7 @@ from django import forms
 from .models import UsersModel
 
 class UserForm(forms.ModelForm):
-    userid = forms.CharField(required=True)
-    name = forms.CharField(required=True)
-    age = forms.IntegerField(required=True, min_value=0)
-    sex = forms.IntegerField(required=True)
+    
     class Meta:
         # どのモデルをフォームにするか指定
         model = UsersModel

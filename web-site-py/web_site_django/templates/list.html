@@ -51,9 +51,11 @@
             <div>{{item.age}}</div>
             <div>{{item.sex}}</div>
             <div>
-                <a href="{% url 'detali' item.pk %}" class="uk-button">Detail</a>
-                <a href="{% url 'update' item.pk %}" class="uk-button">Update</a>
-                <a href="{% url 'delete' item.pk %}" class="uk-button">Delete</a>
+                <div class="uk-grid-small uk-text-center uk-height-1-1" uk-grid>
+                    <div class="uk-width-1-1"><a href="{% url 'detali' item.pk %}" class="uk-button" uk-icon="file-text"></a></div>
+                    <div class="uk-width-1-1"><a href="{% url 'update' item.pk %}" class="uk-button" uk-icon="file-edit"></a></div>
+                    <div class="uk-width-1-1"><a href="{% url 'delete' item.pk %}" class="uk-button" uk-icon="trash"></a></div>
+                </div>
             </div>
         </div>
     {% endfor %}

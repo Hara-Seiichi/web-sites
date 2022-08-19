@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %} User create {% endblock title %}
+
+{% block header %} User create {% endblock header %}
+
+{% block contents %}
+<form method="POST">
+    <div class="uk-align-center">
+        <div class="uk-card uk-card-default">
+            <div class="uk-card-header">
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                    <div class="uk-width-1-4 uk-text-right">User id</div>
+                    <div class="uk-width-3-4 uk-text-left"><input type="text" name="userid"></div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">
+                    <div class="uk-grid-divider uk-grid-small" uk-grid>
+                        <div class="uk-width-1-4 uk-text-right">Name</div>
+                        <div class="uk-width-3-4 uk-text-left"><input type="text" name="name"></div>
+                    </div>
+                </h3>
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                <div class="uk-width-1-4 uk-text-right">Sex</div>
+                    <div class="uk-width-3-4 uk-text-left">
+                        <select class="uk-select" name="sex">
+                            <option value="">choose...</option>
+                            <option value="1">-</option>
+                            <option value="2">M</option>
+                            <option value="3">F</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                    <div class="uk-width-1-4 uk-text-right">Age</div>
+                    <div class="uk-width-3-4 uk-text-left"><input type="text" name="age"></div>
+                </div>
+            </div>
+            <div class="uk-card-footer">
+                <a href="search" class="uk-button">Back</a>
+                <input type="submit" value="create" class="uk-button" />
+            </div>
+        </div>
+        <!-- {%  %}
+            <script>
+                window.onload = function() {
+                    document.getElementById("errorDisp").click();
+                    };
+            </script>
+            <button id="errorDisp" class="uk-hidden" type="button" uk-toggle="target: #ERROR" onclick="console.log('Clicked')"></button>
+            <div id="ERROR" uk-modal>
+                <div class="uk-modal-dialog">
+                    <button class="uk-modal-close-default" uk-close>
+                    </button>
+                    <div class="uk-modal-body">
+                    <h2 class="uk-modal-title">
+                        Input error.
+                    </h2>
+                    {%  %}
+                        <div class="uk-text-danger"></div>
+                    {%  %}
+                    </div>
+                </div>
+            </div>
+        {% endif %} -->
+    </div>
+</form>
+{% endblock contents %}

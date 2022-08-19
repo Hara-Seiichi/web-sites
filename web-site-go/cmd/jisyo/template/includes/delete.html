@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %} User delete {% endblock title %}
+
+{% block header %} User delete {% endblock header %}
+
+{% block contents %}
+<!-- カードコンポーネントの例。-->
+<form method="POST" action="delete">
+    <div class="uk-align-center">
+        <div class="uk-card uk-card-default">
+            <div class="uk-card-header">
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                    <div class="uk-width-1-4 uk-text-right">User id</div>
+                    <div class="uk-width-3-4 uk-text-left">userid</div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">
+                    <div class="uk-grid-divider uk-grid-small" uk-grid>
+                        <div class="uk-width-1-4 uk-text-right">Name</div>
+                        <div class="uk-width-3-4 uk-text-left">name</div>
+                    </div>
+                </h3>
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                    <div class="uk-width-1-4 uk-text-right">Sex</div>
+                    <div class="uk-width-3-4 uk-text-left">sex</div>
+                </div>
+                <div class="uk-grid-divider uk-grid-small" uk-grid>
+                    <div class="uk-width-1-4 uk-text-right">Age</div>
+                    <div class="uk-width-3-4 uk-text-left">age</div>
+                </div>
+            </div>
+            <div class="uk-card-footer">
+                <a href="search" class="uk-button">Back</a>
+                <input type="submit" value="delete" class="uk-button" />
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock contents %}

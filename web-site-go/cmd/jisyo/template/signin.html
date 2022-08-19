@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja" class="uk-height-1-1">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sign In</title>
+        <link rel="stylesheet" href="/css/uikit.css" />
+        <link rel="stylesheet" href="/css/common.css" />
+        <script type="text/javascript" src="/js/common.js"></script>
+        <script type="text/javascript" src="/js/uikit.js"></script>
+        <script
+            type="text/javascript"
+            src="/js/uikit-icons.js"
+        ></script>
+    </head>
+    <body class="uk-height-1-1">
+        <div class="uk-vertical-align uk-text-center uk-height-1-1 uk-background-secondary uk-text-muted">
+            <div>
+                <span class="uk-text-large uk-text-bolder">Sign in</span>
+            </div>
+            <div class="uk-vertical-align-middle uk-align-center" style="width: 250px;">
+                <form class="uk-panel uk-panel-box uk-form" method="POST" action="signin">
+                    {{ if .message }}<span class="uk-text-danger">{{ .message }}</span>{{ end }}
+                    <div class="uk-margin uk-form-row">
+                        <div class="uk-inline">
+                            <span class="uk-form-icon" uk-icon="icon: user"></span>
+                            <input class="uk-width-1-1 uk-input" type="text" name="username">
+                        </div>
+                    </div>
+                    <div class="uk-margin uk-form-row">
+                        <div class="uk-inline">
+                            <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                            <input class="uk-width-1-1 uk-input" type="text" name="password">
+                        </div>
+                    </div>
+                    <div class="uk-margin uk-form-row uk-text-small">
+                        <input class="uk-input uk-button uk-button-secondary" type="submit" value="Sign In">
+                        <hr class="uk-divider-icon uk-margin-medium-top">
+                    </div>
+                    <div class="uk-form-row">
+                        <a class="uk-button uk-button-primary" href="/">Click here for Sign up.</a>
+                        <a class="uk-margin uk-margin-right uk-icon-button" uk-icon="twitter" href="https://twitter.com/OrdinarySumo"></a>
+                        <a class="uk-margin uk-margin-left uk-icon-button" uk-icon="github" href="https://github.com/Hara-Seiichi"></a>
+                    </div>
+                    <div class="uk-form-row">
+                        <p class="uk-text-muted">Created by Sumo.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

@@ -3,7 +3,7 @@ package models
 import "gorm.io/gorm"
 
 // SexMasterテーブル定義
-type SexMaster struct {
+type Sex struct {
 	gorm.Model
-	SexName string
+	Name string `gorm:"uniqueIndex;default:'-';"`
 }

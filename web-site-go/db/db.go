@@ -1,6 +1,7 @@
 package db
 
 import (
+	"web-site-go/configs"
 	"web-site-go/models"
 
 	"github.com/jinzhu/gorm"
@@ -14,7 +15,8 @@ var (
 
 // DB接続の初期化
 func Init() {
-	db, err = gorm.Open("postgres", "host=127.0.0.1 port=5432 user=postgres dbname=golang_gin_db password=sei1013sei sslmode=disable")
+
+	db, err = gorm.Open("postgres", "host="+configs.DB_HOST+" port="+configs.DB_PORT+" user="+configs.DB_USER+" dbname="+configs.DB_NAME+" password="+configs.DB_PASSWORD+" sslmode=disable")
 	if err != nil {
 		panic(err)
 	}
@@ -37,6 +39,6 @@ func Close() {
 
 // エンティティーの移行。不足フィールドの追加のみ実行する。データは変更しない。
 func autoMaigration() {
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.SexMaster{})
+	db.AutoMigrate(&models.Sex{})
+	db.AutoMigrate(&models.User{}).AddForeignKey("sex_id", "sexes(id)", "SET DEFAULT", "SET DEFAULT")
 }

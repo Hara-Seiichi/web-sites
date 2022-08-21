@@ -5,10 +5,10 @@ import "gorm.io/gorm"
 // Userテーブルの定義
 type User struct {
 	gorm.Model
-	Userid      string `unique:"true"`
-	Name        string
-	Age         int
-	SexMasterID int
-	SexMaster   SexMaster `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET 1;"`
-	Password    string
+	Userid   string `gorm:"uniqueIndex"`
+	Name     string
+	Age      int
+	Password string
+	SexID    uint `gorm:"default:1;"`
+	Sex      Sex
 }

@@ -20,18 +20,18 @@
                 <span class="uk-text-muted uk-text-large uk-text-bolder">Sample for Go and Gin</span>
             </div>
             <div class="uk-vertical-align-middle uk-align-center" style="width: 250px;">
-                <form class="uk-panel uk-panel-box uk-form" method="POST" action="signup">
+                <form class="uk-panel uk-panel-box uk-form" method="POST" action="/">
                     {{ if .message }}<span class="uk-text-danger">{{ .message }}</span>{{ end }}
                     <div class="uk-margin uk-form-row">
                         <div class="uk-inline">
                             <span class="uk-form-icon" uk-icon="icon: user"></span>
-                            <input class="uk-width-1-1 uk-input" type="text" name="username">
+                            <input class="uk-width-1-1 uk-input" type="text" name="userid" value="{{ .userid }}">
                         </div>
                     </div>
                     <div class="uk-margin uk-form-row">
                         <div class="uk-inline">
                             <span class="uk-form-icon" uk-icon="icon: lock"></span>
-                            <input class="uk-width-1-1 uk-input" type="text" name="password">
+                            <input class="uk-width-1-1 uk-input" type="text" name="password" value="{{ .password }}">
                         </div>
                     </div>
                     <div class="uk-margin uk-form-row">

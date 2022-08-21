@@ -7,7 +7,9 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"web-site-go/configs"
 	"web-site-go/controller"
+	SM "web-site-go/sessions"
 
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
@@ -16,7 +18,7 @@ import (
 // サーバ初期化
 func Init() {
 	r := router()
-	r.HTMLRender = loadTemplates("template")
+	r.HTMLRender = loadTemplates()
 	setStatic(r)
 
 	r.Run()
@@ -29,17 +31,26 @@ func Init() {
 func router() *gin.Engine {
 	r := gin.Default()
 
+	var sm SM.SessionManager = &SM.LoginSession{}
+	sm.Start(r)
+
 	ctrl := controller.UserController{}
 	// ルーティングの設定
 	r.GET("", ctrl.Singup)
 	r.POST("", ctrl.Singup)
 	r.GET("signin", ctrl.Signin)
 	r.POST("signin", ctrl.Signin)
-	r.GET("list", ctrl.List)
-	r.POST("search", ctrl.List)
-	r.GET("search", ctrl.List)
 
-	r.GET("signout", ctrl.Signout)
+	// ログインチェックをする画面は「app」を使う
+	app := r.Group("/app")
+	app.Use(sessionCheck())
+	{
+		app.GET("list", ctrl.List)
+		app.POST("search", ctrl.List)
+		app.GET("search", ctrl.List)
+		app.GET("signout", ctrl.Signout)
+	}
+
 	// router.PUT("/somePut", putting)
 	// router.DELETE("/someDelete", deleting)
 	// router.PATCH("/somePatch", patching)
@@ -50,23 +61,23 @@ func router() *gin.Engine {
 }
 
 // テンプレートファイルの読込
-func loadTemplates(templatesDir string) multitemplate.Renderer {
+func loadTemplates() multitemplate.Renderer {
 	r := multitemplate.NewRenderer()
 
 	// baseのtemplate
-	layout, err := filepath.Glob(templatesDir + "/layout/*.html")
+	layout, err := filepath.Glob(configs.BASE_FILE_PATH + "/*.html")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// 各画面のコンテンツ
-	includes, err := filepath.Glob(templatesDir + "/includes/*.html")
+	includes, err := filepath.Glob(configs.CONTENTS_FILE_PATH + "/*.html")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// サインアップ、サインイン
-	singes, err := filepath.Glob(templatesDir + "/*.html")
+	singes, err := filepath.Glob(configs.TEMPLATE_BASE + "/*.html")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -87,9 +98,26 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 
 func setStatic(r *gin.Engine) {
 	// 静的ファイルの配置場所(エイリアス,実際の置き場所)
-	r.Static("/css", "./assets/css")
-	r.Static("/js", "./assets/js")
-	r.Static("/assets", "./assets")
+	r.Static("/css", configs.CSS_FILE_PATH)
+	r.Static("/js", configs.JS_FILE_PATH)
+	r.Static("/assets", configs.ASSETS_BASE)
+}
+
+// ログインセッションの確認
+func sessionCheck() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var sm SM.SessionManager = &SM.LoginSession{}
+		sm.Get(c)
+		// 未承認の場合は終了
+		if !sm.Certified(c) {
+			sm.Destroy(c)
+			c.Redirect(http.StatusMovedPermanently, "/signin")
+			c.Abort() // これがないと続けて処理されてしまう
+			return
+		}
+		sm.Set(c)
+		c.Next()
+	}
 }
 
 // シャッドダウンリスナーの設定

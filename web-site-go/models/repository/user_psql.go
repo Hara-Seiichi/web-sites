@@ -13,10 +13,12 @@ type UserRepository struct{}
 type User models.User
 
 type UserProfile struct {
-	Userid string
-	Name   string
-	Age    int
-	Sex    string
+	PK       uint
+	Userid   string
+	Name     string
+	Age      int
+	Sex      string
+	Password string
 }
 
 // Userの一覧を取得
@@ -32,6 +34,7 @@ func (ur UserRepository) GetAll() ([]UserProfile, error) {
 
 	for _, v := range u {
 		p = new(UserProfile)
+		p.PK = v.ID
 		p.Userid = v.Userid
 		p.Name = v.Name
 		p.Age = v.Age
@@ -82,11 +85,16 @@ func (ur UserRepository) SignupUser(userid string, password string) (User, error
 }
 
 // Userを作成するデータを登録する
-func (ur UserRepository) CreateUser(form *User) (User, error) {
+func (ur UserRepository) CreateUser(form *UserProfile) (User, error) {
+
+	// 性別を数値に変換。未選択""はチェック済みなので変換エラーは見ない
+	sexInt, _ := strconv.ParseInt(form.Sex, 10, 32)
+
 	var u User
 	u.Userid = form.Userid
 	u.Name = form.Name
 	u.Age = form.Age
+	u.SexID = uint(sexInt)
 	u.Password = form.Password
 
 	if u, err := createModel(&u); err != nil {

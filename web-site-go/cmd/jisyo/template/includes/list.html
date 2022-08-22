@@ -2,7 +2,7 @@
 {{ define "header" }}List of users{{ end }}
 
 {{ define "contents" }}
-<form class="uk-margin uk-height-1-1" method="GET" action="search">
+<form class="uk-margin uk-height-1-1" method="GET" action="/app/search">
     <div class="uk-height-1-1 uk-grid-match uk-grid-small uk-text-center" uk-grid>
         <!--検索条件-->
         <div class="uk-width-1-2@m">
@@ -17,13 +17,13 @@
         <div class="uk-width-1-2@m">
             <select class="uk-select" name="sex">
                 <option value="">choose...</option>
-                <option value="-" {{ if eq .sex 0 }} selected{{end}} >-</option>
-                <option value="M" {{ if eq .sex 1 }} selected{{end}} >M</option>
-                <option value="F" {{ if eq .sex 2 }} selected{{end}} >F</option>
+                <option value="1" {{ if eq .sex 1 }} selected{{end}} >-</option>
+                <option value="2" {{ if eq .sex 2 }} selected{{end}} >M</option>
+                <option value="3" {{ if eq .sex 3 }} selected{{end}} >F</option>
             </select>
         </div>
         <div class="uk-width-1-2@m">
-            <a href="create" class="uk-button uk-button-default uk-button-large uk-background-default ">Create</a>
+            <a class="uk-button uk-button-default uk-button-large uk-background-default" href="/app/create">Create</a>
         </div>
         <div class="uk-width-1-2@m">
             <input type="submit" value="Search" class="uk-button uk-margin"/>
@@ -49,9 +49,9 @@
             <div>{{ .Sex }}</div>
             <div>
                 <div class="uk-grid-small uk-text-center uk-height-1-1" uk-grid>
-                    <div class="uk-width-1-1"><a href="detali" class="uk-button" uk-icon="file-text"></a></div>
-                    <div class="uk-width-1-1"><a href="update" class="uk-button" uk-icon="file-edit"></a></div>
-                    <div class="uk-width-1-1"><a href="delete" class="uk-button" uk-icon="trash"></a></div>
+                    <div class="uk-width-1-1"><a href="/app/detali" class="uk-button" uk-icon="file-text"></a></div>
+                    <div class="uk-width-1-1"><a href="/app/update" class="uk-button" uk-icon="file-edit"></a></div>
+                    <div class="uk-width-1-1"><a href="/app/delete" class="uk-button" uk-icon="trash"></a></div>
                 </div>
             </div>
         </div>

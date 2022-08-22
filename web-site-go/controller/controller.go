@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 	"web-site-go/models/repository"
 	SM "web-site-go/sessions"
 
@@ -24,6 +25,7 @@ func (pc UserController) Singup(c *gin.Context) {
 		return
 	}
 
+	// 入力チェック（Validationありそうだけどとりあえず）
 	var userid, pw string
 	userid = c.Request.FormValue("userid")
 	pw = c.Request.FormValue("password")
@@ -36,6 +38,7 @@ func (pc UserController) Singup(c *gin.Context) {
 		return
 	}
 
+	// データを作成
 	var u repository.UserRepository
 	if _, err := u.SignupUser(userid, pw); err != nil {
 		c.HTML(http.StatusBadRequest, "signup.html", gin.H{
@@ -60,6 +63,7 @@ func (pc UserController) Signin(c *gin.Context) {
 		return
 	}
 
+	// 入力チェック（Validationありそうだけどとりあえず）
 	var userid, pw string
 	userid = c.Request.FormValue("userid")
 	pw = c.Request.FormValue("password")
@@ -72,6 +76,7 @@ func (pc UserController) Signin(c *gin.Context) {
 		return
 	}
 
+	// 登録されているか確認
 	var ur repository.UserRepository
 	if _, err := ur.GetUserAuthority(userid, pw); err != nil {
 		c.HTML(http.StatusBadRequest, "signin.html", gin.H{
@@ -82,6 +87,7 @@ func (pc UserController) Signin(c *gin.Context) {
 		return
 	}
 
+	// セッションにログイン情報を残して一覧画面へ遷移
 	c.Set("userid", userid)
 	c.Set("userName", userid)
 	c.Set("isAuthenticated", true)
@@ -91,8 +97,11 @@ func (pc UserController) Signin(c *gin.Context) {
 
 func (pc UserController) List(c *gin.Context) {
 
+	sm.GetLoginSession(c)
+	var isAuthenticated, _ = c.Get("isAuthenticated")
+	var userName, _ = c.Get("userName")
+	// GETリクエストの場合は一覧表示
 	if c.Request.Method == http.MethodGet {
-		sm.GetLoginSession(c)
 
 		var ur repository.UserRepository
 		users, err := ur.GetAll()
@@ -100,15 +109,13 @@ func (pc UserController) List(c *gin.Context) {
 			c.HTML(http.StatusInternalServerError, "list.html", gin.H{})
 			return
 		}
-		var isAuthenticated, _ = c.Get("isAuthenticated")
-		var userName, _ = c.Get("userName")
 		c.HTML(http.StatusOK, "list.html", gin.H{
 			"isAuthenticated": isAuthenticated,
 			"userName":        userName,
 			"userid":          "",
 			"name":            "",
 			"age":             "",
-			"sex":             0,
+			"sex":             nil,
 			"items":           users,
 		})
 		return
@@ -123,6 +130,95 @@ func (pc UserController) List(c *gin.Context) {
 	// 	"sex":    0,
 	// 	"items":  users,
 	// })
+}
+
+func (pc UserController) Create(c *gin.Context) {
+
+	sm.GetLoginSession(c)
+	var isAuthenticated, _ = c.Get("isAuthenticated")
+	var userName, _ = c.Get("userName")
+
+	if c.Request.Method == http.MethodGet {
+		c.HTML(http.StatusOK, "create.html", gin.H{
+			"message":         "",
+			"isAuthenticated": isAuthenticated,
+			"userName":        userName,
+			"userid":          "",
+			"name":            "",
+			"age":             "",
+			"sex":             nil,
+		})
+		return
+	}
+
+	// 入力チェック（Validationありそうだけどとりあえず）
+	valid, userid, name, age, sex, pw := isValidInput(c)
+	if !valid {
+		c.HTML(http.StatusBadRequest, "create.html", gin.H{
+			"message":         "Please enter all of the items.",
+			"isAuthenticated": isAuthenticated,
+			"userName":        userName,
+			"userid":          userid,
+			"name":            name,
+			"age":             age,
+			"sex":             sex,
+		})
+		return
+	}
+
+	// 年齢を数値に変換
+	ageInt, err := strconv.ParseInt(age, 10, 32)
+	if err != nil || ageInt < 0 {
+		c.HTML(http.StatusBadRequest, "create.html", gin.H{
+			"message":         "Enter your age as an integer greater than or equal to 0.",
+			"isAuthenticated": isAuthenticated,
+			"userName":        userName,
+			"userid":          userid,
+			"name":            name,
+			"age":             age,
+			"sex":             sex,
+		})
+		return
+	}
+	var ur repository.UserRepository
+	var user = repository.UserProfile{
+		Userid:   userid,
+		Name:     name,
+		Age:      int(ageInt),
+		Sex:      sex,
+		Password: pw,
+	}
+
+	if _, err := ur.CreateUser(&user); err != nil {
+		c.HTML(http.StatusBadRequest, "create.html", gin.H{
+			"message":         "Sorry. Failed to create.",
+			"isAuthenticated": isAuthenticated,
+			"userName":        userName,
+			"userid":          userid,
+			"name":            name,
+			"age":             age,
+			"sex":             sex,
+		})
+		return
+	}
+
+	// 登録成功時は一覧画面へ
+	c.Redirect(http.StatusMovedPermanently, "/app/list")
+}
+
+func isValidInput(c *gin.Context) (bool, string, string, string, string, string) {
+	var userid, name, age, sex, pw string
+	userid = c.Request.FormValue("userid")
+	name = c.Request.FormValue("name")
+	age = c.Request.FormValue("age")
+	sex = c.Request.FormValue("sex")
+	pw = c.Request.FormValue("userid") // とりあえず初期passwordはidと同じで登録。。。
+
+	// どれか一つでも入力がない場合はエラー
+	if userid == "" || name == "" || age == "" || sex == "" || pw == "" {
+		return false, userid, name, age, sex, pw
+	}
+	return true, userid, name, age, sex, pw
 }
 
 func (pc UserController) Signout(c *gin.Context) {

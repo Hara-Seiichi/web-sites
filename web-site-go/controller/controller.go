@@ -89,40 +89,47 @@ func (pc UserController) Signin(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/app/list")
 }
 
-type M_USER struct {
-	Userid string
-	Name   string
-	Age    int
-	Sex    string
-}
-type UserList []M_USER
-
 func (pc UserController) List(c *gin.Context) {
-	var users UserList
-	var user M_USER
-	user.Userid = "hoge"
-	user.Name = "hoge"
-	user.Age = 35
-	user.Sex = "-"
-	users = append(users, user)
+
+	if c.Request.Method == http.MethodGet {
+		sm.GetLoginSession(c)
+
+		var ur repository.UserRepository
+		users, err := ur.GetAll()
+		if err != nil {
+			c.HTML(http.StatusInternalServerError, "list.html", gin.H{})
+			return
+		}
+		var isAuthenticated, _ = c.Get("isAuthenticated")
+		var userName, _ = c.Get("userName")
+		c.HTML(http.StatusOK, "list.html", gin.H{
+			"isAuthenticated": isAuthenticated,
+			"userName":        userName,
+			"userid":          "",
+			"name":            "",
+			"age":             "",
+			"sex":             0,
+			"items":           users,
+		})
+		return
+	}
+
 	// formの値取得
 	// c.Request.FormValue("passwd")
-	c.HTML(http.StatusOK, "list.html", gin.H{
-		"message":          "",
-		"is_authenticated": true,
-		"user":             "hoge",
-		"userid":           "",
-		"name":             "",
-		"age":              "",
-		"sex":              0,
-		"items":            users,
-	})
+	// c.HTML(http.StatusOK, "list.html", gin.H{
+	// 	"userid": "",
+	// 	"name":   "",
+	// 	"age":    "",
+	// 	"sex":    0,
+	// 	"items":  users,
+	// })
 }
 
 func (pc UserController) Signout(c *gin.Context) {
 
 	//セッションからデータを破棄する
 	sm.Destroy(c)
+	sm = &SM.LoginSession{}
 	c.HTML(http.StatusBadRequest, "signin.html", gin.H{
 		"message":  "",
 		"userid":   "",

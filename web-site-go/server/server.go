@@ -15,6 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var sm SM.SessionManager = &SM.LoginSession{}
+
 // サーバ初期化
 func Init() {
 	r := router()
@@ -31,7 +33,6 @@ func Init() {
 func router() *gin.Engine {
 	r := gin.Default()
 
-	var sm SM.SessionManager = &SM.LoginSession{}
 	sm.Start(r)
 
 	ctrl := controller.UserController{}
@@ -48,8 +49,8 @@ func router() *gin.Engine {
 		app.GET("list", ctrl.List)
 		app.POST("search", ctrl.List)
 		app.GET("search", ctrl.List)
-		app.GET("signout", ctrl.Signout)
 	}
+	r.GET("signout", ctrl.Signout)
 
 	// router.PUT("/somePut", putting)
 	// router.DELETE("/someDelete", deleting)
@@ -106,7 +107,6 @@ func setStatic(r *gin.Engine) {
 // ログインセッションの確認
 func sessionCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var sm SM.SessionManager = &SM.LoginSession{}
 		sm.Get(c)
 		// 未承認の場合は終了
 		if !sm.Certified(c) {
@@ -115,7 +115,7 @@ func sessionCheck() gin.HandlerFunc {
 			c.Abort() // これがないと続けて処理されてしまう
 			return
 		}
-		sm.Set(c)
+		// sm.Set(c)
 		c.Next()
 	}
 }

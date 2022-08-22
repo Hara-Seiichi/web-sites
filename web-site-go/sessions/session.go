@@ -19,13 +19,16 @@ type SessionManager interface {
 	Start(r *gin.Engine)
 
 	// Get セッションから値を取得 => 構造体に格納
-	Get(*gin.Context) SessionManager
+	Get(c *gin.Context) SessionManager
+
+	// GetLoginSession 構造体 => コンテキストに格納
+	GetLoginSession(c *gin.Context)
 
 	// Set 構造体を受け取る => セッションに各値を格納
-	Set(*gin.Context) error
+	Set(c *gin.Context) error
 
 	// Destroy セッションを削除 削除対象のセッションキーは構造体ごとに決まるため関数内で定義する
-	Destroy(*gin.Context) error
+	Destroy(c *gin.Context) error
 
 	// Certified 認証を確認する
 	Certified(c *gin.Context) bool
@@ -50,17 +53,31 @@ func (l *LoginSession) Get(c *gin.Context) SessionManager {
 	userid := session.Get("userid")
 	if userid != "" && userid != nil {
 		l.userid = userid.(string)
+	} else {
+		l.userid = ""
 	}
+
 	userName := session.Get("userName")
 	if userName != "" && userName != nil {
 		l.userName = userName.(string)
+	} else {
+		l.userName = ""
 	}
 
 	// idとnameが揃っている時は構造体に入れる（認証が正しく終わっている）
 	if userid != "" && userid != nil && userName != "" && userName != nil {
 		l.isAuthenticated = session.Get("isAuthenticated").(bool)
+	} else {
+		l.isAuthenticated = false
 	}
 	return l
+}
+
+// GetLoginSession 構造体 => コンテキストに格納
+func (l *LoginSession) GetLoginSession(c *gin.Context) {
+	l.Get(c)
+	c.Set("userName", l.userName)
+	c.Set("isAuthenticated", l.isAuthenticated)
 }
 
 // Set 構造体を受け取る => セッションに各値を格納
@@ -90,6 +107,9 @@ func (l *LoginSession) Destroy(c *gin.Context) error {
 	l.userid = ""
 	l.userName = ""
 	l.isAuthenticated = false
+	c.Set("userid", "")
+	c.Set("userName", "")
+	c.Set("isAuthenticated", false)
 	return nil
 }
 

@@ -22,17 +22,17 @@
                 </div>
                 <div class="uk-navbar-right">
                     <!-- ログイン情報を取得する方法 -->
-                    {{ if .is_authenticated }}
-                        <a class="uk-active uk-link-reset">Hello! {{ .user }}.</a>
+                    {{ if .isAuthenticated }}
+                        <a class="uk-active uk-link-reset">Hello! {{ .userName }}.</a>
                         <a class="uk-navbar-toggle uk-navbar-toggle-animate" uk-navbar-toggle-icon href="#"></a>
                         <div class="uk-navbar-dropdown">
                             <ul class="uk-nav uk-navbar-dropdown-nav uk-link-reset">
-                                <li class="uk-active"><a href="/app/signout">Sign out</a></li>
+                                <li class="uk-active"><a href="/signout">Sign out</a></li>
                             </ul>
                         </div>
                     {{ else }}
                         <ul class="uk-navbar-nav uk-link-reset">
-                            <li class="uk-active"><a>Not signed in.</a></li>
+                            <li class="uk-active">Not signed in.</li>
                             <li class="uk-active"><a href="/" class="uk-button">Exit.</a></li>
                         </ul>
                     {{ end }}

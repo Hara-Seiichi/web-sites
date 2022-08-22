@@ -13,23 +13,33 @@ type UserRepository struct{}
 type User models.User
 
 type UserProfile struct {
-	Userid      string
-	Name        string
-	Age         int
-	SexMasterID int
-	Sex         string
+	Userid string
+	Name   string
+	Age    int
+	Sex    string
 }
 
 // Userの一覧を取得
 func (ur UserRepository) GetAll() ([]UserProfile, error) {
 	db := db.GetDB()
-	var u []UserProfile
+	var u []models.User
+	var r []UserProfile
+	var p *UserProfile
 
-	if err := db.Model(&User{}).Preload("sex_masters").Find(&u).Error; err != nil {
+	if err := db.Model(&User{}).Preload("Sex").Find(&u).Error; err != nil {
 		return nil, err
 	}
 
-	return u, nil
+	for _, v := range u {
+		p = new(UserProfile)
+		p.Userid = v.Userid
+		p.Name = v.Name
+		p.Age = v.Age
+		p.Sex = v.Sex.Name
+		r = append(r, *p)
+	}
+
+	return r, nil
 }
 
 // idで絞り込んでユーザを1人取得
@@ -39,7 +49,7 @@ func (ur UserRepository) GetByID(id string) (models.User, error) {
 
 	db := db.GetDB()
 	var u models.User
-	if err := db.Model(&User{}).Where("id = ?", idInt).Preload("sex_masters").Find(&u).Error; err != nil {
+	if err := db.Model(&User{}).Where("id = ?", idInt).Preload("Sex").Find(&u).Error; err != nil {
 		return u, err
 	}
 

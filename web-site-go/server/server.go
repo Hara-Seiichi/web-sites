@@ -48,9 +48,13 @@ func router() *gin.Engine {
 	{
 		app.GET("list", ctrl.List)
 		app.POST("search", ctrl.List)
-		app.GET("search", ctrl.List)
 		app.GET("create", ctrl.Create)
 		app.POST("create", ctrl.Create)
+		app.GET("detali/:PK", ctrl.Detail)
+		app.GET("update/:PK", ctrl.Update)
+		app.POST("update/:PK", ctrl.Update)
+		app.GET("delete/:PK", ctrl.Delete)
+		app.POST("delete/:PK", ctrl.Delete)
 	}
 	r.GET("signout", ctrl.Signout)
 

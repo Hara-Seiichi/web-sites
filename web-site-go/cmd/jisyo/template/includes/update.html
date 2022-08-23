@@ -1,24 +1,21 @@
-{% extends 'base.html' %}
+{{ define "title" }}User update{{ end }}
+{{ define "header" }}User update{{ end }}
 
-{% block title %} User update {% endblock title%}
-
-{% block header %} User update {% endblock header %}
-
-{% block contents %}
-<form method="POST" action="update">
+{{ define "contents" }}
+<form method="POST" action="/app/update/{{ .PK }}">
     <div class="uk-align-center">
         <div class="uk-card uk-card-default">
             <div class="uk-card-header">
                 <div class="uk-grid-divider uk-grid-small" uk-grid>
                     <div class="uk-width-1-4 uk-text-right">User id</div>
-                    <div class="uk-width-3-4 uk-text-left"><input type="text" name="userid" value="userid"></div>
+                    <div class="uk-width-3-4 uk-text-left"><input type="text" name="userid" value="{{ .userid }}"></div>
                 </div>
             </div>
             <div class="uk-card-body">
                 <h3 class="uk-card-title">
                     <div class="uk-grid-divider uk-grid-small" uk-grid>
                         <div class="uk-width-1-4 uk-text-right">Name</div>
-                        <div class="uk-width-3-4 uk-text-left"><input type="text" name="name" value="name"></div>
+                        <div class="uk-width-3-4 uk-text-left"><input type="text" name="name" value="{{ .name }}"></div>
                     </div>
                 </h3>
                 <div class="uk-grid-divider uk-grid-small" uk-grid>
@@ -26,23 +23,23 @@
                     <div class="uk-width-3-4 uk-text-left">
                         <select class="uk-select" name="sex">
                             <option value="">choose...</option>
-                            <option value="1" >-</option>
-                            <option value="2" >M</option>
-                            <option value="3" >F</option>
+                            <option value="1" {{ if eq .sex 1 }} selected{{end}} >-</option>
+                            <option value="2" {{ if eq .sex 2 }} selected{{end}} >M</option>
+                            <option value="3" {{ if eq .sex 3 }} selected{{end}} >F</option>
                         </select>
                     </div>
                 </div>
                 <div class="uk-grid-divider uk-grid-small" uk-grid>
                     <div class="uk-width-1-4 uk-text-right">Age</div>
-                    <div class="uk-width-3-4 uk-text-left"><input type="text" name="age" value="age"></div>
+                    <div class="uk-width-3-4 uk-text-left"><input type="text" name="age" value="{{ .age }}"></div>
                 </div>
             </div>
             <div class="uk-card-footer">
-                <a href="search" class="uk-button">Back</a>
+                <a href="/app/list" class="uk-button">Back</a>
                 <input type="submit" value="update" class="uk-button" />
             </div>
         </div>
-        <!-- {%  %}
+        {{ if ne .message "" }}
             <script>
                 window.onload = function() {
                     document.getElementById("errorDisp").click();
@@ -57,13 +54,11 @@
                     <h2 class="uk-modal-title">
                         Input error.
                     </h2>
-                    {%  %}
-                        <div class="uk-text-danger"></div>
-                    {%  %}
+                        <div class="uk-text-danger">.message</div>
                     </div>
                 </div>
             </div>
-        {% endif %} -->
+        {{ end }}
     </div>
 </form>
-{% endblock contents %}
+{{ end }}

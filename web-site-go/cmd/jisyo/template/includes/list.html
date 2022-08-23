@@ -49,9 +49,9 @@
             <div>{{ .Sex }}</div>
             <div>
                 <div class="uk-grid-small uk-text-center uk-height-1-1" uk-grid>
-                    <div class="uk-width-1-1"><a href="/app/detali" class="uk-button" uk-icon="file-text"></a></div>
-                    <div class="uk-width-1-1"><a href="/app/update" class="uk-button" uk-icon="file-edit"></a></div>
-                    <div class="uk-width-1-1"><a href="/app/delete" class="uk-button" uk-icon="trash"></a></div>
+                    <div class="uk-width-1-1"><a href="/app/detali/{{ .PK }}" class="uk-button" uk-icon="file-text"></a></div>
+                    <div class="uk-width-1-1"><a href="/app/update/{{ .PK }}" class="uk-button" uk-icon="file-edit"></a></div>
+                    <div class="uk-width-1-1"><a href="/app/delete/{{ .PK }}" class="uk-button" uk-icon="trash"></a></div>
                 </div>
             </div>
         </div>

@@ -111,3 +111,37 @@ func createModel(u *User) (User, error) {
 	}
 	return *u, nil
 }
+
+// Userを更新する
+func (ur UserRepository) UpdateByID(id string, form *UserProfile) (models.User, error) {
+
+	var u models.User
+	if u, err := ur.GetByID(id); err != nil {
+		return u, err
+	}
+
+	// 性別を数値に変換。未選択""はチェック済みなので変換エラーは見ない
+	sexInt, _ := strconv.ParseInt(form.Sex, 10, 32)
+	u.Userid = form.Userid
+	u.Name = form.Name
+	u.Age = form.Age
+	u.SexID = uint(sexInt)
+
+	idInt, _ := strconv.ParseInt(id, 10, 32)
+	u.ID = uint(idInt)
+	db := db.GetDB()
+	db.Save(u)
+
+	return u, nil
+}
+
+// Userを削除する
+func (ur UserRepository) DeleteByID(id string) error {
+
+	var u models.User
+	if err := db.GetDB().Where("id = ?", id).Delete(&u).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

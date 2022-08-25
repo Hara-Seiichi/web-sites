@@ -117,17 +117,18 @@ func (pc UserController) Signout(c *gin.Context) {
 }
 
 // //////////////////////////////////////////////
-// 一覧表示・検索
+// 一覧表示
 // //////////////////////////////////////////////
 func (pc UserController) List(c *gin.Context) {
 
 	sm.GetLoginSession(c)
 	var isAuthenticated, _ = c.Get("isAuthenticated")
 	var userName, _ = c.Get("userName")
+	var ur repository.UserRepository
+
 	// GETリクエストの場合は一覧表示
 	if c.Request.Method == http.MethodGet {
 
-		var ur repository.UserRepository
 		users, err := ur.GetAll()
 		if err != nil {
 			c.HTML(http.StatusInternalServerError, "list.html", gin.H{})
@@ -144,16 +145,48 @@ func (pc UserController) List(c *gin.Context) {
 		})
 		return
 	}
+}
 
-	// formの値取得
-	// c.Request.FormValue("passwd")
-	// c.HTML(http.StatusOK, "list.html", gin.H{
-	// 	"userid": "",
-	// 	"name":   "",
-	// 	"age":    "",
-	// 	"sex":    0,
-	// 	"items":  users,
-	// })
+// //////////////////////////////////////////////
+// 検索
+// //////////////////////////////////////////////
+func (pc UserController) Search(c *gin.Context) {
+
+	sm.GetLoginSession(c)
+	var isAuthenticated, _ = c.Get("isAuthenticated")
+	var userName, _ = c.Get("userName")
+	// QueryStringの値取得
+	userid := c.DefaultQuery("userid", "")
+	name := c.Query("name")
+	age := c.Query("age")
+	sex := c.Query("sex")
+
+	// 条件指定があればAND検索
+	var ur repository.UserRepository
+	users, err := ur.UserSearch(userid, name, age, sex)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "list.html", gin.H{
+			"isAuthenticated": isAuthenticated,
+			"userName":        userName,
+			"userid":          "",
+			"name":            "",
+			"age":             "",
+			"sex":             nil,
+			"items":           nil,
+		})
+		return
+	}
+
+	c.HTML(http.StatusOK, "list.html", gin.H{
+		"isAuthenticated": isAuthenticated,
+		"userName":        userName,
+		"userid":          userid,
+		"name":            name,
+		"age":             age,
+		"sex":             sex,
+		"items":           users,
+	})
+
 }
 
 // //////////////////////////////////////////////

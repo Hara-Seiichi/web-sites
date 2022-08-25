@@ -2,11 +2,13 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
+	"time"
 	"web-site-go/configs"
 	"web-site-go/controller"
 	SM "web-site-go/sessions"
@@ -32,6 +34,7 @@ func Init() {
 // ルーティング
 func router() *gin.Engine {
 	r := gin.Default()
+	customLog(r)
 
 	sm.Start(r)
 
@@ -47,7 +50,7 @@ func router() *gin.Engine {
 	app.Use(sessionCheck())
 	{
 		app.GET("list", ctrl.List)
-		app.POST("search", ctrl.List)
+		app.GET("search", ctrl.Search)
 		app.GET("create", ctrl.Create)
 		app.POST("create", ctrl.Create)
 		app.GET("detali/:PK", ctrl.Detail)
@@ -65,6 +68,22 @@ func router() *gin.Engine {
 	// router.OPTIONS("/someOptions", options)
 
 	return r
+}
+
+func customLog(r *gin.Engine) {
+	r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		return fmt.Sprintf("[%s] - %s \"%s %s %s %d %s \"%s\" %s\"\n",
+			param.TimeStamp.Format(time.RFC1123),
+			param.ClientIP,
+			param.Method,
+			param.Path,
+			param.Request.Proto,
+			param.StatusCode,
+			param.Latency,
+			param.Request.UserAgent(),
+			param.ErrorMessage,
+		)
+	}))
 }
 
 // テンプレートファイルの読込

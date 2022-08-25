@@ -72,6 +72,47 @@ func (ur UserRepository) GetUserAuthority(userid string, password string) (model
 	return u, nil
 }
 
+// idで絞り込んでユーザを1人取得
+func (ur UserRepository) UserSearch(userid string, name string, age string, sex string) ([]UserProfile, error) {
+
+	db := db.GetDB()
+	var u []models.User
+	var r []UserProfile
+	var p *UserProfile
+	ageInt, _ := strconv.ParseInt(age, 10, 32)
+
+	chain := db.Model(&User{}).Where("")
+	if userid != "" {
+		chain = chain.Where("userid like ?", "%"+userid+"%")
+	}
+	if name != "" {
+		chain = chain.Where("name like ?", "%"+name+"%")
+	}
+	if age != "" {
+		chain = chain.Where("age = ?", ageInt)
+	}
+	if sex != "" {
+		chain = chain.Where("sex_id = ?", sex)
+	}
+	chain.LogMode(true)
+	if err := chain.Preload("Sex").Find(&u).Error; err != nil {
+		chain.LogMode(false)
+		return nil, err
+	}
+	chain.LogMode(false)
+
+	for _, v := range u {
+		p = new(UserProfile)
+		p.PK = v.ID
+		p.Userid = v.Userid
+		p.Name = v.Name
+		p.Age = v.Age
+		p.Sex = v.Sex.Name
+		r = append(r, *p)
+	}
+	return r, nil
+}
+
 // サインアップでデータを登録する
 func (ur UserRepository) SignupUser(userid string, password string) (User, error) {
 	var u User

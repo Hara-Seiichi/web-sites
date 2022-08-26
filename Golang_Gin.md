@@ -8,6 +8,11 @@
 * [GOlang 1.19](https://go.dev/doc/)
   * [ドキュメント](https://pkg.go.dev/std)
 * [Gin](https://pkg.go.dev/github.com/gin-gonic/gin)
+* [Multitemplate(1.23.8)](https://github.com/go-gorm/gorm)
+* [GORM(v1.23.8)](https://github.com/go-gorm/gorm)
+* [jinzhu/gor(v1.9.16)](https://github.com/jinzhu/gorm)
+* [postgres(v1.9.16)]()
+* [sessions(v0.0.5)](https://github.com/gin-contrib/sessions)
 * [UIkit 3.14.3](https://getuikit.com/)
 * [VSCode 1.70.0](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)
 
@@ -66,43 +71,61 @@
    Ginのインストールコマンドを実行（go.modが書きかわる）  
    `go get -u github.com/gin-gonic/gin`
 
-6. UIkitの導入
+6. Multitemplate（1.23.8）のインストール[(参考サイト)](https://github.com/go-gorm/gorm)  
+   テンプレートを利用する際のライブラリ。  
+   `go get github.com/gin-contrib/multitemplate`
+
+6. GORM(v1.23.8)のインストール[(参考サイト)](https://github.com/go-gorm/gorm)  
+   GO言語のORMライブラリ。
+   DB接続マイグレーションやSQL発行を担当  
+   二つともインストールを実施。  
+   `go get -u gorm.io/gorm`  
+   `go get -u github.com/jinzhu/gorm`
+
+7. Postgresのドライバーインストール(1.9.16)
+   `go get github.com/jinzhu/gorm/dialects/postgres@v1.9.16`
+
+8. session(v0.0.5)[(参考サイト)](https://github.com/gin-contrib/sessions)  
+   sessionを扱うライブラリ  
+   `go get github.com/gin-contrib/sessions`
+
+9.  UIkitの導入
    
    ダウンロードした３ファイルをプロジェクトの`assets`フォルダに入れる。
 
    配置先フォルダはcode参照。  
    設定はsetting.py参照。
 
-### 【未編集です】フレームワーク動作機序の簡易図
-今回の独学で大まかに理解した内容
+### フレームワーク動作機序の簡易図
+今回の独学で大まかに理解した内容  
+ルーティング、テンプレート、sessionの利用宣言などはサーバ起動時にまとめて実行する様に実装する。  
+言語自体の機能は少ないので各種ライブラリを必要に応じてダウンロードする必要がある。  
+業務で利用するなら選定する知識と技量が必要そう。
 ```mermaid
 sequenceDiagram
     participant Chrome
-    Chrome->>urls.py of PJ: URL
-    urls.py of PJ->>urls.py of APP: URL
+    Chrome->>server: URL ルーティング
     participant Template.html
-    participant forms.py
-    urls.py of APP->>views.py: class or function
-    Note right of forms.py: POST param
-    Note right of forms.py: Validation
-    views.py->>models.py: DB操作を依頼
-    models.py->>DB: データ操作実行
-    DB-->>models.py: 結果を返却
-    models.py-->>views.py: 結果を返却
-    views.py-->>Chrome: 結果を返却
-    Note left of views.py: POST param
-    participant DB
+    server->>controller: function呼出
+    controller->>repository: DBアクセス要求
+    repository->>DB : DB操作(gorm)
+    DB-->>repository : 問い合わせ結果
+    repository-->>controller : 画面表示用に成形
     Note left of Template.html: 結果をHTMLに埋込
+    controller-->>Chrome : html書き出し
 ```
 
-### 【未編集です】作成機能の概要
+### 作成機能の概要
+Sessionでログイン情報の保持を実装している。  
+未ログインの状態でList画面等をRequestしたときは  
+Singinの画面が表示される実装にした。
 ```mermaid
 sequenceDiagram
     participant Singup
     Singup->>Singin: Singup success
     Singup->>Singin: Mutual link
     Singin->>Singup: Mutual link
-    Singin->>List: Signin success
+    Singin->>List: Success. Session save.
     List->>List: Search
     List->>Create: Forward
     Create-->>List: Create success
@@ -115,11 +138,11 @@ sequenceDiagram
     Delete-->>List: Back
     List->>Detail: Forward query string pk
     Detail-->>List: Back
-    List-->>Singin: Singout
-    Create-->>Singin: Singout
-    Update-->>Singin: Singout
-    Delete-->>Singin: Singout
-    Detail-->>Singin: Singout
+    List-->>Singin: Singout. Session destroy.
+    Create-->>Singin: Singout. Session destroy.
+    Update-->>Singin: Singout. Session destroy.
+    Delete-->>Singin: Singout. Session destroy.
+    Detail-->>Singin: Singout. Session destroy.
 ```
 
 ## メモ

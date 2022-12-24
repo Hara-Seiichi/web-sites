@@ -82,7 +82,7 @@
    `go get -u gorm.io/gorm`  
    `go get -u github.com/jinzhu/gorm`
 
-7. Postgresのドライバーインストール(1.9.16)
+7. Postgresのドライバーインストール(1.9.16)  
    `go get github.com/jinzhu/gorm/dialects/postgres@v1.9.16`
 
 8. session(v0.0.5)[(参考サイト)](https://github.com/gin-contrib/sessions)  
